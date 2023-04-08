@@ -22,7 +22,7 @@ __author__ = "Folfy Blue"
 __license__ = "GPLv3"
 
 connected_clients: list[socket.socket] = []
-server_socket: socket.socket = None  # type: ignore
+server_socket: socket.socket
 shutdown: bool = False
 
 
