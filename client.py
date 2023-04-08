@@ -18,6 +18,8 @@ from typing import Callable
 __author__ = "Folfy Blue"
 __license__ = "GPLv3"
 
+client_socket: socket.socket
+
 
 def command_handler(msg: str):
     """Handles messages received by the server
@@ -53,7 +55,20 @@ def run_game(id: str):
     webbrowser.open_new(f"steam://rungameid/{id}")
 
 
-COMMANDS: dict[str, Callable] = {"connect": connect, "rungame": run_game}
+def quit():
+    """Disconnects the client from the server"""
+    global client_socket
+    print("Disconnecting from the server...")
+    client_socket.close()
+
+
+COMMANDS: dict[str, Callable] = {
+    "connect": connect,
+    "rungame": run_game,
+    "stop": quit,
+    "quit": quit,
+    "exit": quit,
+}
 
 
 def main(host: str, port: int):
@@ -70,6 +85,7 @@ def main(host: str, port: int):
         host (str): Host to use
         port (int): Port to use
     """
+    global client_socket
     maximum_connection_attempts: int = 5
     retry_timeout: int = 1
 
@@ -77,9 +93,7 @@ def main(host: str, port: int):
     print("Attempting to connect...")
     while attempts < maximum_connection_attempts:
         try:
-            client_socket: socket.socket = socket.socket(
-                socket.AF_INET, socket.SOCK_STREAM
-            )
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client_socket.connect((host, port))
             break
         except ConnectionRefusedError:
@@ -96,16 +110,14 @@ def main(host: str, port: int):
 
     message: str = ""
     try:
-        while message != "stop":
+        while True:
             try:
                 message = client_socket.recv(1024).decode()
                 command_handler(message)
             except socket.timeout:
                 continue
     except KeyboardInterrupt:
-        pass
-    print("Disconnecting from the server...")
-    client_socket.close()
+        quit()
 
 
 if __name__ == "__main__":
