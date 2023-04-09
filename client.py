@@ -127,7 +127,7 @@ if __name__ == "__main__":
         description="Connects to a server and receives messages.", add_help=False
     )
     parser.add_argument(
-        "--host", "-h", required=True, help="The server's hostname or IP address."
+        "--host", "-h", required=False, help="The server's hostname or IP address."
     )
     parser.add_argument(
         "--port",
@@ -138,4 +138,6 @@ if __name__ == "__main__":
         default=42069,
     )
     args = parser.parse_args()
+    if not args.host:
+        args.host = input("Enter the IP of the server to connect to: ").strip()
     main(args.host, args.port)
