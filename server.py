@@ -61,6 +61,7 @@ def run_game(id: str):
 
 
 def graceful_exit():
+    """Gracefully exits the server by disconnecting every client and telling each server thread to shut down, before closing the server's socket"""
     global server_socket
     global shutdown
     print("\nShutting down the server...")
