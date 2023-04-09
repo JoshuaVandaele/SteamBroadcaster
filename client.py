@@ -11,10 +11,11 @@ Example: `python client.py -h 107.0.0.1 -p 42069`
 
 import argparse
 import socket
-import webbrowser
 from sys import exit
 from time import sleep
 from typing import Callable
+
+import commands
 
 __author__ = "Folfy Blue"
 __license__ = "GPLv3"
@@ -38,25 +39,6 @@ def command_handler(msg: str):
     print(f"Received message: {msg}")
 
 
-def connect(ip: str, password: str = ""):
-    """Connects to the given game server IP
-
-    Args:
-        ip (str): ip to connect to, including the port
-        password (str, optional): Password of the server, if any. Defaults to nothing.
-    """
-    webbrowser.open_new(f"steam://connect/{ip}/{password}")
-
-
-def run_game(id: str):
-    """Runs a game given its ID
-
-    Args:
-        id (str): Game ID
-    """
-    webbrowser.open_new(f"steam://rungameid/{id}")
-
-
 def graceful_exit():
     """Disconnects the client from the server"""
     global client_socket
@@ -66,8 +48,8 @@ def graceful_exit():
 
 
 COMMANDS: dict[str, Callable] = {
-    "connect": connect,
-    "rungame": run_game,
+    "connect": commands.connect,
+    "rungame": commands.run_game,
     "stop": graceful_exit,
     "quit": graceful_exit,
     "exit": graceful_exit,
