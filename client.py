@@ -55,19 +55,20 @@ def run_game(id: str):
     webbrowser.open_new(f"steam://rungameid/{id}")
 
 
-def quit():
+def graceful_exit():
     """Disconnects the client from the server"""
     global client_socket
     print("Disconnecting from the server...")
     client_socket.close()
+    quit()
 
 
 COMMANDS: dict[str, Callable] = {
     "connect": connect,
     "rungame": run_game,
-    "stop": quit,
-    "quit": quit,
-    "exit": quit,
+    "stop": graceful_exit,
+    "quit": graceful_exit,
+    "exit": graceful_exit,
 }
 
 
@@ -117,7 +118,7 @@ def main(host: str, port: int):
             except socket.timeout:
                 continue
     except KeyboardInterrupt:
-        quit()
+        graceful_exit()
 
 
 if __name__ == "__main__":

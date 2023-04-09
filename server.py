@@ -60,12 +60,21 @@ def run_game(id: str):
     webbrowser.open_new(f"steam://rungameid/{id}")
 
 
+def graceful_exit():
+    global server_socket
+    global shutdown
+    print("\nShutting down the server...")
+    send_message_to_all_clients("stop")
+    shutdown = True
+    server_socket.close()
+
+
 COMMANDS: dict[str, Callable] = {
     "connect": connect,
     "rungame": run_game,
-    "stop": quit,
-    "quit": quit,
-    "exit": quit,
+    "stop": graceful_exit,
+    "quit": graceful_exit,
+    "exit": graceful_exit,
 }
 
 
@@ -118,16 +127,6 @@ def send_message_to_all_clients(message):
         client_socket.sendall(message.encode())
 
 
-def quit():
-    global server_socket
-    global shutdown
-    print("\nShutting down the server...")
-    shutdown = True
-    server_socket.close()  # type: ignore
-    for client_socket in connected_clients:
-        client_socket.close()
-
-
 def accept_connections():
     """Accepts incoming client connections.
 
@@ -173,7 +172,7 @@ def main(port: int):
     accept_thread.start()
 
     try:
-        while True:
+        while not shutdown:
             inp = input("Broadcast > ")
             command_handler(inp)
     except KeyboardInterrupt:
