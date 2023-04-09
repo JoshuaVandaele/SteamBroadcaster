@@ -38,13 +38,14 @@ def command_handler(msg: str):
     print(f"Received message: {msg}")
 
 
-def connect(ip: str):
+def connect(ip: str, password: str = ""):
     """Connects to the given game server IP
 
     Args:
         ip (str): ip to connect to, including the port
+        password (str, optional): Password of the server, if any. Defaults to nothing.
     """
-    webbrowser.open_new(f"steam://connect/{ip}")
+    webbrowser.open_new(f"steam://connect/{ip}/{password}")
 
 
 def run_game(id: str):

@@ -6,7 +6,7 @@ When a client connects, the server adds it to a list of connected clients, and s
 Usage: `python server.py PORT`
 
 Command list:
-- connect IP:PORT
+- connect IP:PORT [password]
 Connects every client to the given Valve server
 - rungame ID
 Starts up a steam game given it's ID
@@ -42,13 +42,14 @@ def command_handler(msg: str):
     send_message_to_all_clients(msg)
 
 
-def connect(ip: str):
+def connect(ip: str, password: str = ""):
     """Connects to the given game server IP
 
     Args:
         ip (str): ip to connect to, including the port
+        password (str, optional): Password of the server, if any. Defaults to nothing.
     """
-    webbrowser.open_new(f"steam://connect/{ip}")
+    webbrowser.open_new(f"steam://connect/{ip}/{password}")
 
 
 def run_game(id: str):
