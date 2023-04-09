@@ -12,6 +12,7 @@ Example: `python client.py -h 107.0.0.1 -p 42069`
 import argparse
 import socket
 import webbrowser
+from sys import exit
 from time import sleep
 from typing import Callable
 
@@ -60,7 +61,7 @@ def graceful_exit():
     global client_socket
     print("Disconnecting from the server...")
     client_socket.close()
-    quit()
+    exit()
 
 
 COMMANDS: dict[str, Callable] = {
